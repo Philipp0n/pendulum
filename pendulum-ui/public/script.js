@@ -10,7 +10,7 @@ const pendulumColors = [
   'rgb(138,43,226)'
 ]
 const bobMasses = [2, 5, 6, 20, 6]
-const scalingFactor = 15 // Scaling factor for the radius
+const scalingFactor = 15 // Scaling factor for the bob radius
 const barWidth = 800
 const barHeight = 10
 const pivotX = canvas.width / 2
@@ -27,9 +27,9 @@ function updatePendulum () {
 
   for (let i = 0; i < pendulumCount; i++) {
     const momentOfInertia =
-      bobMasses[i] * pendulumLengths[i] * pendulumLengths[i] / 10000
+      (bobMasses[i] * pendulumLengths[i] * pendulumLengths[i]) / 10000
     const angularAcceleration =
-      (-gravity / pendulumLengths[i]) * Math.sin(angles[i]) / momentOfInertia
+      ((-gravity / pendulumLengths[i]) * Math.sin(angles[i])) / momentOfInertia
     angularVelocities[i] = angularVelocities[i] + angularAcceleration * timeStep
     angles[i] = angles[i] + angularVelocities[i] * timeStep
   }
