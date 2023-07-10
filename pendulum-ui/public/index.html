@@ -1,16 +1,19 @@
 <html>
 
 <head>
-    <title>Pendulum</title>
-    <style>
-        canvas {
-            border: 1px solid #000;
-        }
-    </style>
+    <title>Pendulum Simulation</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-    <canvas id="canvas" width="800" height="600"></canvas>
+    <div class="center">
+        <h1>Pendulum Simulation</h1>
+        <div class="button-container">
+            <div id="toggleButton" class="pause" onclick="togglePlayPause()"></div>
+            <div id="stopButton" class="stop" onclick="stopPlayback()"></div>
+          </div>
+        <canvas id="canvas" width="1400" height="800"></canvas>
+    </div>
     <script src="script.js"></script>
 </body>
 
