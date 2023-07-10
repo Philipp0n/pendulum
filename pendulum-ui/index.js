@@ -1,9 +1,11 @@
-const express = require('express');
-const app = express();
-const port = 3000;
+const express = require('express')
+const path = require('path');
 
-// Define your routes and application logic here
+const app = express()
+const port = 3000
+
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
-});
+  console.log(`Server running on port ${port}`)
+})
