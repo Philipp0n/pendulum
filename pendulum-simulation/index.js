@@ -8,6 +8,10 @@ let mass = 1
 let stringLength = 100
 let angularVelocity = 0
 let angle = Math.PI / 4
+let pivotX = 0
+let pivotY = 0
+let bobX = 0
+let bobY = 0
 
 if (hasFlag('--port')) {
   port = getFlagValue('--port')
@@ -39,6 +43,10 @@ function updatePendulum () {
     ((-gravity / stringLength) * Math.sin(angle)) / momentOfInertia
   angularVelocity = angularVelocity + angularAcceleration * timeStep
   angle = angle + angularVelocity * timeStep
+
+  const bobX = pivotX + stringLength * Math.sin(angle)
+  const bobY = pivotY + stringLength * Math.cos(angle)
+
   console.log('Current pendulum angle is ' + angle)
 }
 
@@ -56,12 +64,9 @@ app.get('/angle', (req, res) => {
 })
 
 app.post('/initialization', (req, res) => {
-  ;({ angle, mass, stringLength } = req.body)
+  ;({ angle, mass, stringLength, pivotX, pivotY } = req.body)
   // Convert degree to radian
-  angle = angle * (Math.PI/180);
-
-  // Start the loop at 120 times per second
-  var interval = setInterval(updatePendulum, (1 / tickRate) * 1000) // Simulate at a fixed tick rate
+  angle = angle * (Math.PI / 180)
 
   // Send a response back to the client
   res.sendStatus(204)
@@ -70,4 +75,6 @@ app.post('/initialization', (req, res) => {
 // Start the server application
 app.listen(port, () => {
   console.log(`Server running on port ${port}`)
+  // Start the loop at 120 times per second
+  var interval = setInterval(updatePendulum, (1 / tickRate) * 1000) // Simulate at a fixed tick rate
 })

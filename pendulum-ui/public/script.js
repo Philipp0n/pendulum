@@ -1,43 +1,52 @@
 const canvas = document.getElementById('canvas')
 const ctx = canvas.getContext('2d')
 const serverBaseURL = 'http://localhost:'
-const pendulumPorts = []
 
 const pendulumCount = 5
 const pendulumColors = []
-const bobMasses = [2, 5, 6, 20, 6]
 const scalingFactor = 15 // Scaling factor for the bob radius
+const bobRadius = []
 const barWidth = 800
 const barHeight = 10
-const pivotX = canvas.width / 2
+const canvasCenter = canvas.width / 2
 const pivotY = 100
-const pendulumOffsets = [-400, -200, 0, 200, 400]
-const pendulumLengths = [100, 200, 400, 600, 50]
+const pivotX = [
+  canvasCenter - 400,
+  canvasCenter - 200,
+  canvasCenter,
+  canvasCenter + 200,
+  canvasCenter + 400
+]
+const stringLengths = []
+const pendulumPorts = []
+let playing = false
 
 let angles = [Math.PI / 4, Math.PI / 4, Math.PI / 4, Math.PI / 4, Math.PI / 4]
 let angularVelocities = [0, 0, 0, 0, 0]
 
 function updatePendulum () {
-  for (let i = 0; i < pendulumCount; i++) {
-    let url = serverBaseURL + pendulumPorts[i] + '/angle'
-    fetch(url)
-      .then(response => {
-        if (response.ok) {
-          return response.json()
-        } else {
-          throw new Error('Error retrieving value')
-        }
-      })
-      .then(data => {
-        const currentAngle = data.angle
-        angles[i] = currentAngle
-      })
-      .catch(error => {
-        console.error('Error:', error.message)
-      })
-  }
+  if (playing) {
+    for (let i = 0; i < pendulumCount; i++) {
+      let url = serverBaseURL + pendulumPorts[i] + '/angle'
+      fetch(url)
+        .then(response => {
+          if (response.ok) {
+            return response.json()
+          } else {
+            throw new Error('Error retrieving value')
+          }
+        })
+        .then(data => {
+          const currentAngle = data.angle
+          angles[i] = currentAngle
+        })
+        .catch(error => {
+          console.error('Error:', error.message)
+        })
+    }
 
-  drawPendulums()
+    drawPendulums()
+  }
   requestAnimationFrame(updatePendulum)
 }
 
@@ -46,27 +55,23 @@ function drawPendulums () {
 
   // Draw the top bar
   ctx.fillStyle = 'black'
-  ctx.fillRect(pivotX - barWidth / 2, pivotY, barWidth, barHeight)
+  ctx.fillRect(canvasCenter - barWidth / 2, pivotY, barWidth, barHeight)
 
   for (let i = 0; i < pendulumCount; i++) {
-    currentPivotX = pivotX + pendulumOffsets[i]
-    const bobX = currentPivotX + pendulumLengths[i] * Math.sin(angles[i])
-    const bobY = pivotY + pendulumLengths[i] * Math.cos(angles[i])
+    const bobX = pivotX[i] + stringLengths[i] * Math.sin(angles[i])
+    const bobY = pivotY + stringLengths[i] * Math.cos(angles[i])
 
     // Draw the pendulum rod
     ctx.beginPath()
-    ctx.moveTo(currentPivotX, pivotY)
+    ctx.moveTo(pivotX[i], pivotY)
     ctx.lineTo(bobX, bobY)
     ctx.strokeStyle = pendulumColors[i]
     ctx.lineWidth = 2
     ctx.stroke()
 
-    // Calculate the radius based on the mass of the pendulum
-    const bobRadius = Math.sqrt(bobMasses[i]) * scalingFactor
-
     // Draw the pendulum bob
     ctx.beginPath()
-    ctx.arc(bobX, bobY, bobRadius, 0, Math.PI * 2)
+    ctx.arc(bobX, bobY, bobRadius[i], 0, Math.PI * 2)
     ctx.fillStyle = pendulumColors[i]
     ctx.fill()
   }
@@ -107,11 +112,16 @@ function initialiseSimulation () {
     const pendulum_data = {
       angle: angle,
       mass: mass,
-      stringLength: stringLength
+      stringLength: stringLength,
+      pivotX: pivotX[i],
+      pivotY: pivotY
     }
     // Local values
+    stringLengths.push(stringLength)
     pendulumColors.push(color)
     pendulumPorts.push(port)
+    // Calculate the radius based on the bob's mass
+    bobRadius.push(Math.sqrt(mass) * scalingFactor)
     // Send pendulum configuration to server
     let url = serverBaseURL + pendulumPorts[i] + '/initialization'
     fetch(url, {
@@ -120,30 +130,19 @@ function initialiseSimulation () {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(pendulum_data)
+    }).catch(error => {
+      console.error('Error:', error)
     })
-      .then(response => {
-        if (response.ok) {
-          // Hide the start menu and show the canvas
-          let simulationContainer = document.getElementById(
-            'simulation-container'
-          )
-          let startMenuContainer = document.getElementById(
-            'start-menu-container'
-          )
-          let hidden = simulationContainer.getAttribute('hidden')
-          if (hidden) {
-            simulationContainer.removeAttribute('hidden')
-            startMenuContainer.setAttribute('hidden', 'hidden')
-          }
-          updatePendulum()
-        } else {
-          console.error('Request failed:', response.status)
-        }
-      })
-      .catch(error => {
-        console.error('Error:', error)
-      })
   }
+  // Hide the start menu and show the canvas
+  let simulationContainer = document.getElementById('simulation-container')
+  let startMenuContainer = document.getElementById('start-menu-container')
+  let hidden = simulationContainer.getAttribute('hidden')
+  if (hidden) {
+    simulationContainer.removeAttribute('hidden')
+    startMenuContainer.setAttribute('hidden', 'hidden')
+  }
+  playing = true
 }
 
 window.onload = function () {
@@ -154,3 +153,5 @@ window.onload = function () {
     updateSliderValue(sliderId)
   }
 }
+
+updatePendulum()
