@@ -1,16 +1,10 @@
 const canvas = document.getElementById('canvas')
 const ctx = canvas.getContext('2d')
 const serverBaseURL = 'http://localhost:'
-const pendulumPorts = [3001, 3002, 3003, 3004, 3005]
+const pendulumPorts = []
 
 const pendulumCount = 5
-const pendulumColors = [
-  'rgb(30,144,255)',
-  'rgb(255,165,0)',
-  'rgb(255,255,0)',
-  'rgb(0,128,0)',
-  'rgb(138,43,226)'
-]
+const pendulumColors = []
 const bobMasses = [2, 5, 6, 20, 6]
 const scalingFactor = 15 // Scaling factor for the bob radius
 const barWidth = 800
@@ -103,12 +97,52 @@ function updateSliderValue (sliderId) {
 }
 
 function initialiseSimulation () {
-  let simulationContainer = document.getElementById('simulation-container')
-  let startMenuContainer = document.getElementById('start-menu-container')
-  let hidden = simulationContainer.getAttribute('hidden')
-  if (hidden) {
-    simulationContainer.removeAttribute('hidden')
-    startMenuContainer.setAttribute('hidden', 'hidden')
+  for (let i = 0; i < pendulumCount; i++) {
+    // Collect start menu values
+    angle = document.getElementById(`angleSlider${i + 1}`).value
+    mass = document.getElementById(`massSlider${i + 1}`).value
+    stringLength = document.getElementById(`stringLength${i + 1}`).value
+    color = document.getElementById(`color${i + 1}`).value
+    port = document.getElementById(`port${i + 1}`).value
+    const pendulum_data = {
+      angle: angle,
+      mass: mass,
+      stringLength: stringLength
+    }
+    // Local values
+    pendulumColors.push(color)
+    pendulumPorts.push(port)
+    // Send pendulum configuration to server
+    let url = serverBaseURL + pendulumPorts[i] + '/initialization'
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(pendulum_data)
+    })
+      .then(response => {
+        if (response.ok) {
+          // Hide the start menu and show the canvas
+          let simulationContainer = document.getElementById(
+            'simulation-container'
+          )
+          let startMenuContainer = document.getElementById(
+            'start-menu-container'
+          )
+          let hidden = simulationContainer.getAttribute('hidden')
+          if (hidden) {
+            simulationContainer.removeAttribute('hidden')
+            startMenuContainer.setAttribute('hidden', 'hidden')
+          }
+          updatePendulum()
+        } else {
+          console.error('Request failed:', response.status)
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error)
+      })
   }
 }
 
@@ -120,5 +154,3 @@ window.onload = function () {
     updateSliderValue(sliderId)
   }
 }
-
-updatePendulum()

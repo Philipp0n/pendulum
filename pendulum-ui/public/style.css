@@ -110,9 +110,14 @@ canvas {
     margin-left: 25px;
 }
 
+.port-input {
+    width: 60px;
+    margin-left: 35px;
+}
+
 .start-button {
-    margin:0 auto;
-    display:block;
+    margin: 0 auto;
+    display: block;
     background-color: #4CAF50;
     border: none;
     color: white;
@@ -120,5 +125,5 @@ canvas {
     text-align: center;
     text-decoration: none;
     font-size: 16px;
-    cursor:pointer;
+    cursor: pointer;
 }

@@ -1,3 +1,3 @@
-# Pendulum project
+# Pendulum simulation project
 
 

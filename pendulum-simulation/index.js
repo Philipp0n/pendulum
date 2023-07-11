@@ -5,7 +5,7 @@ let port = 0
 
 const tickRate = 120 // in Hz
 let mass = 1
-let pendulumLength = 100
+let stringLength = 100
 let angularVelocity = 0
 let angle = Math.PI / 4
 
@@ -34,9 +34,9 @@ function updatePendulum () {
   const gravity = 0.9
   const timeStep = 0.5
 
-  const momentOfInertia = (mass * pendulumLength * pendulumLength) / 10000
+  const momentOfInertia = (mass * stringLength * stringLength) / 10000
   const angularAcceleration =
-    ((-gravity / pendulumLength) * Math.sin(angle)) / momentOfInertia
+    ((-gravity / stringLength) * Math.sin(angle)) / momentOfInertia
   angularVelocity = angularVelocity + angularAcceleration * timeStep
   angle = angle + angularVelocity * timeStep
   console.log('Current pendulum angle is ' + angle)
@@ -48,14 +48,26 @@ app.use(
   })
 )
 
+app.use(express.json())
+
 // Endpoint to get the current angle value
 app.get('/angle', (req, res) => {
   res.json({ angle: angle })
 })
 
+app.post('/initialization', (req, res) => {
+  ;({ angle, mass, stringLength } = req.body)
+  // Convert degree to radian
+  angle = angle * (Math.PI/180);
+
+  // Start the loop at 120 times per second
+  var interval = setInterval(updatePendulum, (1 / tickRate) * 1000) // Simulate at a fixed tick rate
+
+  // Send a response back to the client
+  res.sendStatus(204)
+})
+
 // Start the server application
 app.listen(port, () => {
   console.log(`Server running on port ${port}`)
-  // Start the loop at 120 times per second
-  var interval = setInterval(updatePendulum, (1 / tickRate) * 1000) // Simulate at a fixed tick rate
 })
