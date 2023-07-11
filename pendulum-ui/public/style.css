@@ -86,3 +86,39 @@ canvas {
     height: 20px;
     background-color: white;
 }
+
+.pendulums-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.pendulum-config-container {
+    margin: 30px;
+}
+
+.input-container {
+    display: flex;
+    align-items: center;
+}
+
+.slider-value {
+    width: 16px;
+}
+
+.color-input {
+    margin-left: 25px;
+}
+
+.start-button {
+    margin:0 auto;
+    display:block;
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    cursor:pointer;
+}

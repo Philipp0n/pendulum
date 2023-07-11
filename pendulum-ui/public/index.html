@@ -8,11 +8,143 @@
 <body>
     <div class="center">
         <h1>Pendulum simulation</h1>
-        <div class="button-container">
-            <div id="toggleButton" class="pause" onclick="togglePlayPause()"></div>
-            <div id="stopButton" class="stop" onclick="stopPlayback()"></div>
+        <div id="start-menu-container">
+            <div class="pendulums-container">
+                <div class="pendulum-config-container">
+                    <h3>Pendulum #1</h3>
+                    <div class="input-container">
+                        <p>Initial angle:</p>
+                        <input type="range" id="angleSlider1" class="slider" min="0" max="180" value="45"
+                            oninput="updateSliderValue('angleSlider1')">
+                        <div id="angleSlider1Value" class="slider-value"></div>
+                    </div>
+                    <div class="input-container">
+                        <p>Mass:</p>
+                        <input type="range" id="massSlider1" class="slider" min="1" max="50" value="5"
+                            oninput="updateSliderValue('massSlider1')">
+                        <div id="massSlider1Value" class="slider-value"></div>
+                    </div>
+                    <div class="input-container">
+                        <p>String length:</p>
+                        <input type="range" id="stringLength1" class="slider" min="1" max="800" value="100"
+                            oninput="updateSliderValue('stringLength1')">
+                        <div id="stringLength1Value" class="slider-value"></div>
+                    </div>
+                    <div class="input-container">
+                        <p>Color:</p>
+                        <input type="color" id="color1" class="color-input" value="#1E90FF">
+                    </div>
+                </div>
+                <div class="pendulum-config-container">
+                    <h3>Pendulum #2</h3>
+                    <div class="input-container">
+                        <p>Initial angle:</p>
+                        <input type="range" id="angleSlider2" class="slider" min="0" max="180" value="45"
+                            oninput="updateSliderValue('angleSlider2')">
+                        <div id="angleSlider2Value" class="slider-value"></div>
+                    </div>
+                    <div class="input-container">
+                        <p>Mass:</p>
+                        <input type="range" id="massSlider2" class="slider" min="1" max="50" value="5"
+                            oninput="updateSliderValue('massSlider2')">
+                        <div id="massSlider2Value" class="slider-value"></div>
+                    </div>
+                    <div class="input-container">
+                        <p>String length:</p>
+                        <input type="range" id="stringLength2" class="slider" min="1" max="800" value="100"
+                            oninput="updateSliderValue('stringLength2')">
+                        <div id="stringLength2Value" class="slider-value"></div>
+                    </div>
+                    <div class="input-container">
+                        <p>Color:</p>
+                        <input type="color" id="color2" class="color-input" value="#FFA500">
+                    </div>
+                </div>
+                <div class="pendulum-config-container">
+                    <h3>Pendulum #3</h3>
+                    <div class="input-container">
+                        <p>Initial angle:</p>
+                        <input type="range" id="angleSlider3" class="slider" min="0" max="180" value="45"
+                            oninput="updateSliderValue('angleSlider3')">
+                        <div id="angleSlider3Value" class="slider-value"></div>
+                    </div>
+                    <div class="input-container">
+                        <p>Mass:</p>
+                        <input type="range" id="massSlider3" class="slider" min="1" max="50" value="5"
+                            oninput="updateSliderValue('massSlider3')">
+                        <div id="massSlider3Value" class="slider-value"></div>
+                    </div>
+                    <div class="input-container">
+                        <p>String length:</p>
+                        <input type="range" id="stringLength3" class="slider" min="1" max="800" value="100"
+                            oninput="updateSliderValue('stringLength3')">
+                        <div id="stringLength3Value" class="slider-value"></div>
+                    </div>
+                    <div class="input-container">
+                        <p>Color:</p>
+                        <input type="color" id="color3" class="color-input" value="#FFFF00">
+                    </div>
+                </div>
+                <div class="pendulum-config-container">
+                    <h3>Pendulum #4</h3>
+                    <div class="input-container">
+                        <p>Initial angle:</p>
+                        <input type="range" id="angleSlider4" class="slider" min="0" max="180" value="45"
+                            oninput="updateSliderValue('angleSlider4')">
+                        <div id="angleSlider4Value" class="slider-value"></div>
+                    </div>
+                    <div class="input-container">
+                        <p>Mass:</p>
+                        <input type="range" id="massSlider4" class="slider" min="1" max="50" value="5"
+                            oninput="updateSliderValue('massSlider4')">
+                        <div id="massSlider4Value" class="slider-value"></div>
+                    </div>
+                    <div class="input-container">
+                        <p>String length:</p>
+                        <input type="range" id="stringLength4" class="slider" min="1" max="800" value="100"
+                            oninput="updateSliderValue('stringLength4')">
+                        <div id="stringLength4Value" class="slider-value"></div>
+                    </div>
+                    <div class="input-container">
+                        <p>Color:</p>
+                        <input type="color" id="color4" class="color-input" value="#008000">
+                    </div>
+                </div>
+                <div class="pendulum-config-container">
+                    <h3>Pendulum #5</h3>
+                    <div class="input-container">
+                        <p>Initial angle:</p>
+                        <input type="range" id="angleSlider5" class="slider" min="0" max="180" value="45"
+                            oninput="updateSliderValue('angleSlider5')">
+                        <div id="angleSlider5Value" class="slider-value"></div>
+                    </div>
+                    <div class="input-container">
+                        <p>Mass:</p>
+                        <input type="range" id="massSlider5" class="slider" min="1" max="50" value="5"
+                            oninput="updateSliderValue('massSlider5')">
+                        <div id="massSlider5Value" class="slider-value"></div>
+                    </div>
+                    <div class="input-container">
+                        <p>String length:</p>
+                        <input type="range" id="stringLength5" class="slider" min="1" max="800" value="100"
+                            oninput="updateSliderValue('stringLength5')">
+                        <div id="stringLength5Value" class="slider-value"></div>
+                    </div>
+                    <div class="input-container">
+                        <p>Color:</p>
+                        <input type="color" id="color5" class="color-input" value="#8A2BE2">
+                    </div>
+                </div>
+            </div>
+            <button type="button" class="start-button" onclick="initialiseSimulation()">Start!</button>
         </div>
-        <canvas id="canvas" width="1400" height="800"></canvas>
+        <div id="simulation-container" hidden="hidden">
+            <div class="button-container">
+                <div id="toggleButton" class="pause" onclick="togglePlayPause()"></div>
+                <div id="stopButton" class="stop" onclick="stopPlayback()"></div>
+            </div>
+            <canvas id="canvas" width="1400" height="800"></canvas>
+        </div>
     </div>
     <script src="script.js"></script>
 </body>

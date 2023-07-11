@@ -1,4 +1,5 @@
 const express = require('express')
+const cors = require('cors')
 const app = express()
 let port = 0
 
@@ -41,10 +42,16 @@ function updatePendulum () {
   console.log('Current pendulum angle is ' + angle)
 }
 
+app.use(
+  cors({
+    origin: 'http://localhost:3000'
+  })
+)
+
 // Endpoint to get the current angle value
 app.get('/angle', (req, res) => {
-  res.json({ angle: angle });
-});
+  res.json({ angle: angle })
+})
 
 // Start the server application
 app.listen(port, () => {

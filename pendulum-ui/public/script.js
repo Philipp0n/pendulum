@@ -1,5 +1,7 @@
 const canvas = document.getElementById('canvas')
 const ctx = canvas.getContext('2d')
+const serverBaseURL = 'http://localhost:'
+const pendulumPorts = [3001, 3002, 3003, 3004, 3005]
 
 const pendulumCount = 5
 const pendulumColors = [
@@ -22,16 +24,23 @@ let angles = [Math.PI / 4, Math.PI / 4, Math.PI / 4, Math.PI / 4, Math.PI / 4]
 let angularVelocities = [0, 0, 0, 0, 0]
 
 function updatePendulum () {
-  const gravity = 0.9
-  const timeStep = 0.5
-
   for (let i = 0; i < pendulumCount; i++) {
-    const momentOfInertia =
-      (bobMasses[i] * pendulumLengths[i] * pendulumLengths[i]) / 10000
-    const angularAcceleration =
-      ((-gravity / pendulumLengths[i]) * Math.sin(angles[i])) / momentOfInertia
-    angularVelocities[i] = angularVelocities[i] + angularAcceleration * timeStep
-    angles[i] = angles[i] + angularVelocities[i] * timeStep
+    let url = serverBaseURL + pendulumPorts[i] + '/angle'
+    fetch(url)
+      .then(response => {
+        if (response.ok) {
+          return response.json()
+        } else {
+          throw new Error('Error retrieving value')
+        }
+      })
+      .then(data => {
+        const currentAngle = data.angle
+        angles[i] = currentAngle
+      })
+      .catch(error => {
+        console.error('Error:', error.message)
+      })
   }
 
   drawPendulums()
@@ -84,6 +93,32 @@ function stopPlayback () {
   var button = document.getElementById('toggleButton')
   button.classList.remove('pause')
   button.classList.add('play')
+}
+
+function updateSliderValue (sliderId) {
+  const slider = document.getElementById(sliderId)
+  const sliderValueDisplay = document.getElementById(`${sliderId}Value`)
+
+  sliderValueDisplay.textContent = slider.value
+}
+
+function initialiseSimulation () {
+  let simulationContainer = document.getElementById('simulation-container')
+  let startMenuContainer = document.getElementById('start-menu-container')
+  let hidden = simulationContainer.getAttribute('hidden')
+  if (hidden) {
+    simulationContainer.removeAttribute('hidden')
+    startMenuContainer.setAttribute('hidden', 'hidden')
+  }
+}
+
+window.onload = function () {
+  const sliders = document.getElementsByClassName('slider')
+
+  for (let i = 0; i < sliders.length; i++) {
+    const sliderId = sliders[i].id
+    updateSliderValue(sliderId)
+  }
 }
 
 updatePendulum()
