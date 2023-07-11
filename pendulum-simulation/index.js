@@ -36,7 +36,7 @@ function getFlagValue (flag) {
 
 function updatePendulum () {
   const gravity = 0.9
-  const timeStep = 0.5
+  const timeStep = 0.2
 
   const momentOfInertia = (mass * stringLength * stringLength) / 10000
   const angularAcceleration =
@@ -44,10 +44,10 @@ function updatePendulum () {
   angularVelocity = angularVelocity + angularAcceleration * timeStep
   angle = angle + angularVelocity * timeStep
 
-  const bobX = pivotX + stringLength * Math.sin(angle)
-  const bobY = pivotY + stringLength * Math.cos(angle)
+  bobX = pivotX + stringLength * Math.sin(angle)
+  bobY = pivotY + stringLength * Math.cos(angle)
 
-  console.log('Current pendulum angle is ' + angle)
+  console.log('Current pendulum coordinates:', Math.round(bobX), Math.round(bobY))
 }
 
 app.use(
@@ -59,8 +59,8 @@ app.use(
 app.use(express.json())
 
 // Endpoint to get the current angle value
-app.get('/angle', (req, res) => {
-  res.json({ angle: angle })
+app.get('/coordinates', (req, res) => {
+  res.json({ bobX: bobX, bobY: bobY })
 })
 
 app.post('/initialization', (req, res) => {

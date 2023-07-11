@@ -17,17 +17,16 @@ const pivotX = [
   canvasCenter + 200,
   canvasCenter + 400
 ]
-const stringLengths = []
+let bobX = new Array(pendulumCount);
+let bobY = new Array(pendulumCount);
 const pendulumPorts = []
 let playing = false
 
-let angles = [Math.PI / 4, Math.PI / 4, Math.PI / 4, Math.PI / 4, Math.PI / 4]
-let angularVelocities = [0, 0, 0, 0, 0]
-
 function updatePendulum () {
   if (playing) {
+    // Fetch each bob coordinates from servers
     for (let i = 0; i < pendulumCount; i++) {
-      let url = serverBaseURL + pendulumPorts[i] + '/angle'
+      let url = serverBaseURL + pendulumPorts[i] + '/coordinates'
       fetch(url)
         .then(response => {
           if (response.ok) {
@@ -37,8 +36,8 @@ function updatePendulum () {
           }
         })
         .then(data => {
-          const currentAngle = data.angle
-          angles[i] = currentAngle
+          bobX[i] = data.bobX
+          bobY[i] = data.bobY
         })
         .catch(error => {
           console.error('Error:', error.message)
@@ -58,20 +57,18 @@ function drawPendulums () {
   ctx.fillRect(canvasCenter - barWidth / 2, pivotY, barWidth, barHeight)
 
   for (let i = 0; i < pendulumCount; i++) {
-    const bobX = pivotX[i] + stringLengths[i] * Math.sin(angles[i])
-    const bobY = pivotY + stringLengths[i] * Math.cos(angles[i])
 
     // Draw the pendulum rod
     ctx.beginPath()
     ctx.moveTo(pivotX[i], pivotY)
-    ctx.lineTo(bobX, bobY)
+    ctx.lineTo(bobX[i], bobY[i])
     ctx.strokeStyle = pendulumColors[i]
     ctx.lineWidth = 2
     ctx.stroke()
 
     // Draw the pendulum bob
     ctx.beginPath()
-    ctx.arc(bobX, bobY, bobRadius[i], 0, Math.PI * 2)
+    ctx.arc(bobX[i], bobY[i], bobRadius[i], 0, Math.PI * 2)
     ctx.fillStyle = pendulumColors[i]
     ctx.fill()
   }
@@ -82,7 +79,9 @@ function togglePlayPause () {
   if (button.classList.contains('play')) {
     button.classList.remove('play')
     button.classList.add('pause')
+    playing = true
   } else {
+    playing = false
     button.classList.remove('pause')
     button.classList.add('play')
   }
@@ -117,7 +116,6 @@ function initialiseSimulation () {
       pivotY: pivotY
     }
     // Local values
-    stringLengths.push(stringLength)
     pendulumColors.push(color)
     pendulumPorts.push(port)
     // Calculate the radius based on the bob's mass
