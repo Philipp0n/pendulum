@@ -2,6 +2,7 @@
 
 This project is an implementation of a simple pendulum running in a web browser. Each pendulum's current position is calculated by a dedicated server that runs the physics simulation continuously. A separate UI process displays the pendulum in the web browser after the pendulum's configuration is set in the start menu. Simulation controls are also available in the UI to start, pause or stop the pendulum.
 
+\* **I personally tested and developed the project with Node.js version 18.16.0, npm version 9.5.1 and Google Chrome** \*
 ## Install
 
 First, make sure Node.js is installed on your computer by running the following command:
