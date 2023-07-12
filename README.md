@@ -85,7 +85,7 @@ Now open your browser and navigate to the url : http://localhost:3000/
     Connection: keep-alive
     Keep-Alive: timeout=5
 
-## Start/pause the simulation
+## Play/pause the simulation
 
 ### Request
 
