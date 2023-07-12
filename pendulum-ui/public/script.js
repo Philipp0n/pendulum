@@ -21,7 +21,7 @@ let bobX = new Array(pendulumCount)
 let bobY = new Array(pendulumCount)
 const pendulumPorts = []
 let playing = false
-let stoped = false
+let paused = false
 
 function updatePendulum () {
   if (playing) {
@@ -44,19 +44,17 @@ function updatePendulum () {
           console.error('Error:', error.message)
         })
     }
-
-    drawPendulums()
   }
+  drawPendulums()
   requestAnimationFrame(updatePendulum)
 }
 
 function drawPendulums () {
   ctx.clearRect(0, 0, canvas.width, canvas.height)
-
     // Draw the top bar
     ctx.fillStyle = 'black'
     ctx.fillRect(canvasCenter - barWidth / 2, pivotY, barWidth, barHeight)
-    if (!stoped) {
+    if (!paused) {
       for (let i = 0; i < pendulumCount; i++) {
         // Draw the pendulum rod
         ctx.beginPath()
@@ -80,9 +78,9 @@ function togglePlayPause () {
   if (button.classList.contains('play')) {
     button.classList.remove('play')
     button.classList.add('pause')
-    if (stoped) {
+    if (paused) {
       initializeSimulation()
-      stoped = false
+      paused = false
       return
     }
   } else {
@@ -111,7 +109,7 @@ function stopPlayback () {
   var button = document.getElementById('toggleButton')
   button.classList.remove('pause')
   button.classList.add('play')
-  stoped = true
+  paused = true
 }
 
 function updateSliderValue (sliderId) {

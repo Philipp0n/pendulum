@@ -39,7 +39,7 @@ function getFlagValue (flag) {
 
 function updatePendulum () {
   if (playing) {
-    const momentOfInertia = (mass * stringLength * stringLength) / 10000
+    const momentOfInertia = (mass / 10000) * stringLength * stringLength
     const angularAcceleration =
       ((-gravity / stringLength) * Math.sin(angle)) / momentOfInertia
     angularVelocity = angularVelocity + angularAcceleration * timeStep
