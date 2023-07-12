@@ -27,7 +27,7 @@ function updatePendulum () {
   if (playing) {
     // Fetch each bob coordinates from servers
     for (let i = 0; i < pendulumCount; i++) {
-      let url = serverBaseURL + pendulumPorts[i] + '/coordinates'
+      let url = serverBaseURL + pendulumPorts[i] + '/coordinates/'
       fetch(url)
         .then(response => {
           if (response.ok) {
@@ -81,7 +81,7 @@ function togglePlayPause () {
     button.classList.remove('play')
     button.classList.add('pause')
     if (stoped) {
-      initialiseSimulation()
+      initializeSimulation()
       stoped = false
       return
     }
@@ -94,7 +94,7 @@ function togglePlayPause () {
     value: playing
   }
   for (let i = 0; i < pendulumCount; i++) {
-    let url = serverBaseURL + pendulumPorts[i] + '/control'
+    let url = serverBaseURL + pendulumPorts[i] + '/control/'
     fetch(url, {
       method: 'POST',
       headers: {
@@ -121,7 +121,7 @@ function updateSliderValue (sliderId) {
   sliderValueDisplay.textContent = slider.value
 }
 
-function initialiseSimulation () {
+function initializeSimulation () {
   for (let i = 0; i < pendulumCount; i++) {
     // Collect start menu values
     angle = document.getElementById(`angleSlider${i + 1}`).value
@@ -142,7 +142,7 @@ function initialiseSimulation () {
     // Calculate the radius based on the bob's mass
     bobRadius.push(Math.sqrt(mass) * scalingFactor)
     // Send pendulum configuration to server
-    let url = serverBaseURL + pendulumPorts[i] + '/initialization'
+    let url = serverBaseURL + pendulumPorts[i] + '/initialization/'
     fetch(url, {
       method: 'POST',
       headers: {

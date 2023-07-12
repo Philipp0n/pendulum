@@ -65,11 +65,11 @@ app.use(
 app.use(express.json())
 
 // Endpoint to get the current angle value
-app.get('/coordinates', (req, res) => {
+app.get('/coordinates/', (req, res) => {
   res.json({ bobX: bobX, bobY: bobY })
 })
 
-app.post('/initialization', (req, res) => {
+app.post('/initialization/', (req, res) => {
   ;({ angle, mass, stringLength, pivotX, pivotY } = req.body)
   // Convert degree to radian
   angle = angle * (Math.PI / 180)
@@ -79,7 +79,7 @@ app.post('/initialization', (req, res) => {
   res.sendStatus(204)
 })
 
-app.post('/control', (req, res) => {
+app.post('/control/', (req, res) => {
   playing = req.body.value
 
   // Send a response back to the client
