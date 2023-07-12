@@ -4,6 +4,8 @@ const app = express()
 let port = 0
 
 const tickRate = 120 // in Hz
+const gravity = 0.9
+const timeStep = 0.5
 let mass = 1
 let stringLength = 100
 let angularVelocity = 0
@@ -12,6 +14,7 @@ let pivotX = 0
 let pivotY = 0
 let bobX = 0
 let bobY = 0
+let playing = false
 
 if (hasFlag('--port')) {
   port = getFlagValue('--port')
@@ -35,19 +38,22 @@ function getFlagValue (flag) {
 }
 
 function updatePendulum () {
-  const gravity = 0.9
-  const timeStep = 0.2
+  if (playing) {
+    const momentOfInertia = (mass * stringLength * stringLength) / 10000
+    const angularAcceleration =
+      ((-gravity / stringLength) * Math.sin(angle)) / momentOfInertia
+    angularVelocity = angularVelocity + angularAcceleration * timeStep
+    angle = angle + angularVelocity * timeStep
 
-  const momentOfInertia = (mass * stringLength * stringLength) / 10000
-  const angularAcceleration =
-    ((-gravity / stringLength) * Math.sin(angle)) / momentOfInertia
-  angularVelocity = angularVelocity + angularAcceleration * timeStep
-  angle = angle + angularVelocity * timeStep
+    bobX = pivotX + stringLength * Math.sin(angle)
+    bobY = pivotY + stringLength * Math.cos(angle)
 
-  bobX = pivotX + stringLength * Math.sin(angle)
-  bobY = pivotY + stringLength * Math.cos(angle)
-
-  console.log('Current pendulum coordinates:', Math.round(bobX), Math.round(bobY))
+    console.log(
+      'Current pendulum coordinates:',
+      Math.round(bobX),
+      Math.round(bobY)
+    )
+  }
 }
 
 app.use(
@@ -67,6 +73,14 @@ app.post('/initialization', (req, res) => {
   ;({ angle, mass, stringLength, pivotX, pivotY } = req.body)
   // Convert degree to radian
   angle = angle * (Math.PI / 180)
+  playing = true
+
+  // Send a response back to the client
+  res.sendStatus(204)
+})
+
+app.post('/control', (req, res) => {
+  playing = req.body.value
 
   // Send a response back to the client
   res.sendStatus(204)

@@ -17,10 +17,11 @@ const pivotX = [
   canvasCenter + 200,
   canvasCenter + 400
 ]
-let bobX = new Array(pendulumCount);
-let bobY = new Array(pendulumCount);
+let bobX = new Array(pendulumCount)
+let bobY = new Array(pendulumCount)
 const pendulumPorts = []
 let playing = false
+let stoped = false
 
 function updatePendulum () {
   if (playing) {
@@ -52,26 +53,26 @@ function updatePendulum () {
 function drawPendulums () {
   ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-  // Draw the top bar
-  ctx.fillStyle = 'black'
-  ctx.fillRect(canvasCenter - barWidth / 2, pivotY, barWidth, barHeight)
-
-  for (let i = 0; i < pendulumCount; i++) {
-
-    // Draw the pendulum rod
-    ctx.beginPath()
-    ctx.moveTo(pivotX[i], pivotY)
-    ctx.lineTo(bobX[i], bobY[i])
-    ctx.strokeStyle = pendulumColors[i]
-    ctx.lineWidth = 2
-    ctx.stroke()
-
-    // Draw the pendulum bob
-    ctx.beginPath()
-    ctx.arc(bobX[i], bobY[i], bobRadius[i], 0, Math.PI * 2)
-    ctx.fillStyle = pendulumColors[i]
-    ctx.fill()
-  }
+    // Draw the top bar
+    ctx.fillStyle = 'black'
+    ctx.fillRect(canvasCenter - barWidth / 2, pivotY, barWidth, barHeight)
+    if (!stoped) {
+      for (let i = 0; i < pendulumCount; i++) {
+        // Draw the pendulum rod
+        ctx.beginPath()
+        ctx.moveTo(pivotX[i], pivotY)
+        ctx.lineTo(bobX[i], bobY[i])
+        ctx.strokeStyle = pendulumColors[i]
+        ctx.lineWidth = 2
+        ctx.stroke()
+  
+        // Draw the pendulum bob
+        ctx.beginPath()
+        ctx.arc(bobX[i], bobY[i], bobRadius[i], 0, Math.PI * 2)
+        ctx.fillStyle = pendulumColors[i]
+        ctx.fill()
+      }
+    }
 }
 
 function togglePlayPause () {
@@ -79,11 +80,30 @@ function togglePlayPause () {
   if (button.classList.contains('play')) {
     button.classList.remove('play')
     button.classList.add('pause')
-    playing = true
+    if (stoped) {
+      initialiseSimulation()
+      stoped = false
+      return
+    }
   } else {
-    playing = false
     button.classList.remove('pause')
     button.classList.add('play')
+  }
+  playing = !playing
+  const data = {
+    value: playing
+  }
+  for (let i = 0; i < pendulumCount; i++) {
+    let url = serverBaseURL + pendulumPorts[i] + '/control'
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    }).catch(error => {
+      console.error('Error:', error)
+    })
   }
 }
 
@@ -91,6 +111,7 @@ function stopPlayback () {
   var button = document.getElementById('toggleButton')
   button.classList.remove('pause')
   button.classList.add('play')
+  stoped = true
 }
 
 function updateSliderValue (sliderId) {
