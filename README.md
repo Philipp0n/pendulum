@@ -30,9 +30,9 @@ Install the project dependencies in both the `pendulum-ui` and the `pendulum-sim
 On five seperate terminals run the following commands
 
     cd pendulum-simulation
-    node index.js --port <number>
+    node index.js --port <number> // By default use port 3001 to 3005
 
-Port numbers must match those defined in the ui application's start menu
+Port numbers must match those defined in the ui application's start menu. The default values are port 3001 to 3005.
 
 ### UI
 
